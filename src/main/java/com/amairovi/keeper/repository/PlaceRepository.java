@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static com.mongodb.client.model.Filters.in;
+
 public class PlaceRepository {
 
     private final MongoConfiguration mongoConfiguration;
@@ -39,10 +41,10 @@ public class PlaceRepository {
         Set<ObjectId> objectIds = ids.stream()
                 .map(ObjectId::new)
                 .collect(Collectors.toSet());
-        places.find(Filters.in("_id", objectIds))
+
+        places.find(in("_id", objectIds))
                 .forEach((Consumer<? super Document>) doc -> {
-                    Place place = new Place();
-                    place.setName(doc.getString("name"));
+                    Place place = documentToPlace(doc);
                     result.add(place);
                 });
         return result;
@@ -50,11 +52,23 @@ public class PlaceRepository {
 
 
     public List<Place> findByParent(Place parent) {
+        MongoCollection<Document> places = mongoConfiguration.getPlaceCollection();
 
-        return null;
-//        String parentId = parent.getId();
-//        return places.stream()
-//                .filter(p -> p.getParentId().equals(parentId))
-//                .collect(toList());
+        List<Place> result = new ArrayList<>();
+
+        places.find(Filters.eq("parentId", parent.getId()))
+                .forEach((Consumer<? super Document>) doc -> {
+                    Place place = documentToPlace(doc);
+                    result.add(place);
+                });
+        return result;
+    }
+
+    private Place documentToPlace(Document d) {
+        Place place = new Place();
+        place.setId(d.getObjectId("_id").toString());
+        place.setName(d.getString("name"));
+        place.setParentId(d.getString("parentId"));
+        return place;
     }
 }
