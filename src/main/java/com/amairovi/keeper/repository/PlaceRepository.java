@@ -6,6 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.in;
 
+@Repository
 public class PlaceRepository {
 
     private final MongoConfiguration mongoConfiguration;

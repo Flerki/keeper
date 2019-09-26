@@ -5,6 +5,7 @@ import com.amairovi.keeper.model.Place;
 import com.amairovi.keeper.model.User;
 import com.amairovi.keeper.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,7 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
+@Service
 public class PlaceService {
 
     private final PlaceRepository placeRepository;
