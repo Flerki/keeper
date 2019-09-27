@@ -12,11 +12,11 @@ public class UserPlace {
     private final String name;
     private final List<UserPlace> children;
 
-    public Set<String> getHierarchyIds() {
+    public Set<String> generateHierarchyIds() {
         HashSet<String> ids = new HashSet<>();
 
         children.stream()
-                .map(UserPlace::getHierarchyIds)
+                .map(UserPlace::generateHierarchyIds)
                 .forEach(ids::addAll);
 
         ids.add(id);
