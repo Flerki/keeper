@@ -1,0 +1,37 @@
+[
+  {
+    "id": "5d8d0c082948d1417d171ab0",
+    "name": "place_0",
+    "parentId": null
+  },
+  {
+    "id": "5d8d0c082948d1417d171ab1",
+    "name": "place_1",
+    "parentId": null
+  },
+  {
+    "id": "5d8d0c082948d1417d171ab2",
+    "name": "place_2",
+    "parentId": null
+  },
+  {
+    "id": "5d8d0c082948d1417d171ab3",
+    "name": "place_3",
+    "parentId": "5d8d0c082948d1417d171ab0"
+  },
+  {
+    "id": "5d8d0c082948d1417d171ab4",
+    "name": "place_4",
+    "parentId": "5d8d0c082948d1417d171ab3"
+  },
+  {
+    "id": "5d8d0c082948d1417d171ab5",
+    "name": "place_5",
+    "parentId": "5d8d0c082948d1417d171ab0"
+  },
+  {
+    "id": "5d8d0c082948d1417d171ab6",
+    "name": "place_6",
+    "parentId": "5d8d0c082948d1417d171ab5"
+  }
+]
