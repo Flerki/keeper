@@ -52,4 +52,22 @@ public class UserRepository {
                 });
     }
 
+    public Optional<User> findByEmail(String email) {
+        log.debug("Find user by email: {}", email);
+
+        MongoCollection<Document> users = mongoConfiguration.getUserCollection();
+
+        Document found = users.find(eq("email", email))
+                .first();
+        return Optional.ofNullable(found)
+                .map(d -> {
+                    User user = new User();
+                    user.setId(found.getObjectId("_id").toString());
+                    user.setEmail(found.getString("email"));
+                    ArrayList<String> places = (ArrayList<String>) found.get("places");
+                    user.setPlaces(new HashSet<>(places));
+                    return user;
+                });
+    }
+
 }
