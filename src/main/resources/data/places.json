@@ -33,5 +33,10 @@
     "id": "5d8d0c082948d1417d171ab6",
     "name": "place_6",
     "parentId": "5d8d0c082948d1417d171ab5"
+  },
+  {
+    "id": "5d8d0c082948d1417d171ab7",
+    "name": "place_7",
+    "parentId": "null"
   }
 ]

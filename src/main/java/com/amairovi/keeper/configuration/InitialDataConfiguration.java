@@ -1,6 +1,7 @@
 package com.amairovi.keeper.configuration;
 
 import com.amairovi.keeper.model.Place;
+import com.amairovi.keeper.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoCollection;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class InitialDataConfiguration {
         log.info("Generate and upload some data to db");
 
         addPlaces();
+        addUsers();
     }
 
     private void addPlaces() {
@@ -62,6 +64,37 @@ public class InitialDataConfiguration {
         }
 
         log.info("End to generate and upload some places to db");
+
+    }
+
+    private void addUsers(){
+        log.info("Begin to generate and upload some users to db");
+
+        Resource resource = new ClassPathResource("data/users.json");
+        try(InputStream input = resource.getInputStream()){
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            String json = reader.lines().collect(Collectors.joining());
+            ObjectMapper objectMapper = new ObjectMapper();
+            User[] users = objectMapper.readValue(json, User[].class);
+
+            MongoCollection<Document> userCollection = mongoConfiguration.getUserCollection();
+            userCollection.drop();
+
+            Arrays.stream(users)
+                    .forEach(u -> {
+
+                        Document document = new Document()
+                                .append("_id", new ObjectId(u.getId()))
+                                .append("email", u.getEmail())
+                                .append("places", u.getPlaces());
+
+                        userCollection.insertOne(document);
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        log.info("End to generate and upload some users to db");
 
     }
 }
