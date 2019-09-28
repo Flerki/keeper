@@ -34,6 +34,16 @@ public class UserRepository {
         return document.get("_id").toString();
     }
 
+    public void update(User user) {
+        log.debug("Update user: {}", user);
+        MongoCollection<Document> users = mongoConfiguration.getUserCollection();
+        Document document = new Document()
+                .append("email", user.getEmail())
+                .append("places", user.getPlaces());
+
+        users.replaceOne(eq("email", user.getEmail()), document);
+    }
+
     public Optional<User> findById(String id) {
         log.debug("Find user by id: {}", id);
 
