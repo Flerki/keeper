@@ -20,8 +20,15 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UserDoesNotExistException("User with email " + email + " doesn't exist."));
+    }
+
     public User findById(String id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserDoesNotExistException(id));
+                .orElseThrow(() ->
+                        new UserDoesNotExistException("User with id " + id + " doesn't exist."));
     }
 }
