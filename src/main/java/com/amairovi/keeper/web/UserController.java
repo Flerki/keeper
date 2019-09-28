@@ -1,5 +1,6 @@
 package com.amairovi.keeper.web;
 
+import com.amairovi.keeper.dto.Authentication;
 import com.amairovi.keeper.dto.Registration;
 import com.amairovi.keeper.dto.UserPlace;
 import com.amairovi.keeper.model.User;
@@ -20,6 +21,13 @@ public class UserController {
     @PutMapping
     public void register(@RequestBody Registration registration) {
         userService.register(registration.getEmail());
+    }
+
+    @PostMapping
+    public String authentication(@RequestBody Authentication authentication) {
+        String email = authentication.getEmail();
+        return userService.findByEmail(email)
+                .getId();
     }
 
     @GetMapping("/{userId}/places")
