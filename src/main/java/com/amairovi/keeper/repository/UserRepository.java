@@ -42,14 +42,7 @@ public class UserRepository {
         Document found = users.find(eq("_id", new ObjectId(id)))
                 .first();
         return Optional.ofNullable(found)
-                .map(d -> {
-                    User user = new User();
-                    user.setId(found.getObjectId("_id").toString());
-                    user.setEmail(found.getString("email"));
-                    ArrayList<String> places = (ArrayList<String>) found.get("places");
-                    user.setPlaces(new HashSet<>(places));
-                    return user;
-                });
+                .map(this::documentToUser);
     }
 
     public Optional<User> findByEmail(String email) {
@@ -60,14 +53,15 @@ public class UserRepository {
         Document found = users.find(eq("email", email))
                 .first();
         return Optional.ofNullable(found)
-                .map(d -> {
-                    User user = new User();
-                    user.setId(found.getObjectId("_id").toString());
-                    user.setEmail(found.getString("email"));
-                    ArrayList<String> places = (ArrayList<String>) found.get("places");
-                    user.setPlaces(new HashSet<>(places));
-                    return user;
-                });
+                .map(this::documentToUser);
     }
 
+    private User documentToUser(Document d) {
+        User user = new User();
+        user.setId(d.getObjectId("_id").toString());
+        user.setEmail(d.getString("email"));
+        ArrayList<String> places = (ArrayList<String>) d.get("places");
+        user.setPlaces(new HashSet<>(places));
+        return user;
+    }
 }
