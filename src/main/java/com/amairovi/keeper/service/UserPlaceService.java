@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 @Service
-public class PlaceService {
+public class UserPlaceService {
 
     private final PlaceRepository placeRepository;
 

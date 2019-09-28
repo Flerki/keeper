@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -20,17 +19,17 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class PlaceServiceTest {
+public class UserPlaceServiceTest {
 
 
-    private PlaceService placeService;
+    private UserPlaceService placeService;
 
     private PlaceRepository placeRepository;
 
     @Before
     public void setup() {
         placeRepository = mock(PlaceRepository.class);
-        placeService = new PlaceService(placeRepository);
+        placeService = new UserPlaceService(placeRepository);
     }
 
     @Test

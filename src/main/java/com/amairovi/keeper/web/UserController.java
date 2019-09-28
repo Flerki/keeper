@@ -4,7 +4,7 @@ import com.amairovi.keeper.dto.Authentication;
 import com.amairovi.keeper.dto.Registration;
 import com.amairovi.keeper.dto.UserPlace;
 import com.amairovi.keeper.model.User;
-import com.amairovi.keeper.service.PlaceService;
+import com.amairovi.keeper.service.UserPlaceService;
 import com.amairovi.keeper.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final PlaceService placeService;
+    private final UserPlaceService placeService;
     private final UserService userService;
 
     @PutMapping
