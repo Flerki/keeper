@@ -27,4 +27,10 @@ public class MongoConfiguration {
 
         return database.getCollection("places");
     }
+
+    public MongoCollection<Document> getUserCollection() {
+        MongoDatabase database = mongo.getDatabase("keeper");
+
+        return database.getCollection("users");
+    }
 }
