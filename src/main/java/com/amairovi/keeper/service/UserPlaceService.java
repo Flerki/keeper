@@ -4,6 +4,7 @@ import com.amairovi.keeper.dto.UserPlace;
 import com.amairovi.keeper.model.Place;
 import com.amairovi.keeper.model.User;
 import com.amairovi.keeper.repository.PlaceRepository;
+import com.amairovi.keeper.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +20,14 @@ import static java.util.stream.Collectors.toList;
 public class UserPlaceService {
 
     private final PlaceRepository placeRepository;
+    private final UserRepository userRepository;
 
-    public String save(Place place, User user) {
-        String id = placeRepository.save(place);
-
+    public void save(Place place, User user) {
         if (place.getParentId() == null) {
-            user.addPlace(id);
+            user.addPlace(place.getId());
         }
 
-        return id;
+        userRepository.update(user);
     }
 
     public List<UserPlace> getPlacesHierarchyForUser(User user) {

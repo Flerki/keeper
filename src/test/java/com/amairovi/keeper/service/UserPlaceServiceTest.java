@@ -4,6 +4,7 @@ import com.amairovi.keeper.dto.UserPlace;
 import com.amairovi.keeper.model.Place;
 import com.amairovi.keeper.model.User;
 import com.amairovi.keeper.repository.PlaceRepository;
+import com.amairovi.keeper.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +30,8 @@ public class UserPlaceServiceTest {
     @Before
     public void setup() {
         placeRepository = mock(PlaceRepository.class);
-        placeService = new UserPlaceService(placeRepository);
+        UserRepository userRepository = mock(UserRepository.class);
+        placeService = new UserPlaceService(placeRepository, userRepository);
     }
 
     @Test
