@@ -32,4 +32,16 @@ public class PlaceService {
 
         placeRepository.update(place);
     }
+
+    public void delete(String id){
+        Place place = placeRepository.findById(id)
+                .orElseThrow(() -> new PlaceDoesNotExistException("Place with id " + id + " does not exist."));
+
+        placeRepository.delete(id);
+
+        placeRepository.findByParent(place)
+                .stream()
+                .map(Place::getId)
+                .forEach(this::delete);
+    }
 }

@@ -87,6 +87,11 @@ public class PlaceRepository {
         return result;
     }
 
+    public void delete(String id) {
+        mongoConfiguration.getPlaceCollection()
+                .deleteOne(eq("_id", new ObjectId(id)));
+    }
+
     private Place documentToPlace(Document d) {
         Place place = new Place();
         place.setId(d.getObjectId("_id").toString());

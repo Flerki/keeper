@@ -46,4 +46,10 @@ public class PlaceController {
         placeService.update(placeId, name, parentPlaceId);
     }
 
+    @DeleteMapping("/{placeId}")
+    public void delete(@PathVariable String placeId) {
+        log.debug("Delete place {}.", placeId);
+
+        placeService.delete(placeId);
+    }
 }
