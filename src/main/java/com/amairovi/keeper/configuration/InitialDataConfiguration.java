@@ -4,10 +4,10 @@ import com.amairovi.keeper.model.Place;
 import com.amairovi.keeper.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoCollection;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -22,12 +22,20 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Configuration
-@RequiredArgsConstructor
 @ConditionalOnProperty(name = "generate-data", havingValue = "true")
 @Slf4j
 public class InitialDataConfiguration {
 
-    private final MongoConfiguration mongoConfiguration;
+    private final MongoCollection<Document> placesCollection;
+    private final MongoCollection<Document> usersCollection;
+
+    public InitialDataConfiguration(
+            @Qualifier("places") MongoCollection<Document> placesCollection,
+            @Qualifier("users") MongoCollection<Document> usersCollection
+    ) {
+        this.placesCollection = placesCollection;
+        this.usersCollection = usersCollection;
+    }
 
     @PostConstruct
     public void init() {
@@ -41,14 +49,13 @@ public class InitialDataConfiguration {
         log.info("Begin to generate and upload some places to db");
 
         Resource resource = new ClassPathResource("data/places.json");
-        try(InputStream input = resource.getInputStream()){
+        try (InputStream input = resource.getInputStream()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
             String json = reader.lines().collect(Collectors.joining());
             ObjectMapper objectMapper = new ObjectMapper();
             Place[] places = objectMapper.readValue(json, Place[].class);
 
-            MongoCollection<Document> placeCollection = mongoConfiguration.getPlaceCollection();
-            placeCollection.drop();
+            placesCollection.drop();
 
             Arrays.stream(places)
                     .forEach(p -> {
@@ -57,7 +64,7 @@ public class InitialDataConfiguration {
                                 .append("_id", new ObjectId(p.getId()))
                                 .append("parentId", p.getParentId());
 
-                        placeCollection.insertOne(document);
+                        placesCollection.insertOne(document);
                     });
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,18 +74,17 @@ public class InitialDataConfiguration {
 
     }
 
-    private void addUsers(){
+    private void addUsers() {
         log.info("Begin to generate and upload some users to db");
 
         Resource resource = new ClassPathResource("data/users.json");
-        try(InputStream input = resource.getInputStream()){
+        try (InputStream input = resource.getInputStream()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
             String json = reader.lines().collect(Collectors.joining());
             ObjectMapper objectMapper = new ObjectMapper();
             User[] users = objectMapper.readValue(json, User[].class);
 
-            MongoCollection<Document> userCollection = mongoConfiguration.getUserCollection();
-            userCollection.drop();
+            usersCollection.drop();
 
             Arrays.stream(users)
                     .forEach(u -> {
@@ -88,7 +94,7 @@ public class InitialDataConfiguration {
                                 .append("email", u.getEmail())
                                 .append("places", u.getPlaces());
 
-                        userCollection.insertOne(document);
+                        usersCollection.insertOne(document);
                     });
         } catch (IOException e) {
             e.printStackTrace();

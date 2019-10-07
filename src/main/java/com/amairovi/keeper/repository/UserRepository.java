@@ -1,12 +1,12 @@
 package com.amairovi.keeper.repository;
 
-import com.amairovi.keeper.configuration.MongoConfiguration;
 import com.amairovi.keeper.model.User;
 import com.mongodb.client.MongoCollection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -20,11 +20,11 @@ import static com.mongodb.client.model.Filters.eq;
 @RequiredArgsConstructor
 public class UserRepository {
 
-    private final MongoConfiguration mongoConfiguration;
+    @Qualifier("users")
+    private final MongoCollection<Document> users;
 
     public String save(User user) {
         log.debug("Save user: {}", user);
-        MongoCollection<Document> users = mongoConfiguration.getUserCollection();
         Document document = new Document()
                 .append("email", user.getEmail())
                 .append("places", user.getPlaces());
@@ -36,7 +36,6 @@ public class UserRepository {
 
     public void update(User user) {
         log.debug("Update user: {}", user);
-        MongoCollection<Document> users = mongoConfiguration.getUserCollection();
         Document document = new Document()
                 .append("email", user.getEmail())
                 .append("places", user.getPlaces());
@@ -47,8 +46,6 @@ public class UserRepository {
     public Optional<User> findById(String id) {
         log.debug("Find user by id: {}", id);
 
-        MongoCollection<Document> users = mongoConfiguration.getUserCollection();
-
         Document found = users.find(eq("_id", new ObjectId(id)))
                 .first();
         return Optional.ofNullable(found)
@@ -57,8 +54,6 @@ public class UserRepository {
 
     public Optional<User> findByEmail(String email) {
         log.debug("Find user by email: {}", email);
-
-        MongoCollection<Document> users = mongoConfiguration.getUserCollection();
 
         Document found = users.find(eq("email", email))
                 .first();

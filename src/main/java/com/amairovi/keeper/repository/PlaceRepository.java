@@ -1,12 +1,12 @@
 package com.amairovi.keeper.repository;
 
-import com.amairovi.keeper.configuration.MongoConfiguration;
 import com.amairovi.keeper.model.Place;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
+import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -20,16 +20,13 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.in;
 
 @Repository
+@RequiredArgsConstructor
 public class PlaceRepository {
 
-    private final MongoConfiguration mongoConfiguration;
-
-    public PlaceRepository(MongoConfiguration mongoConfiguration) {
-        this.mongoConfiguration = mongoConfiguration;
-    }
+    @Qualifier("places")
+    private final MongoCollection<Document> places;
 
     public String save(Place place) {
-        MongoCollection<Document> places = mongoConfiguration.getPlaceCollection();
         Document document = new Document("name", place.getName())
                 .append("parentId", place.getParentId());
 
@@ -39,8 +36,6 @@ public class PlaceRepository {
     }
 
     public Optional<Place> findById(String id) {
-        MongoCollection<Document> places = mongoConfiguration.getPlaceCollection();
-
         FindIterable<Document> documents = places.find(eq("_id", new ObjectId(id)));
 
         return Optional.ofNullable(documents.first())
@@ -48,7 +43,6 @@ public class PlaceRepository {
     }
 
     public void update(Place place) {
-        MongoCollection<Document> places = mongoConfiguration.getPlaceCollection();
         Document document = new Document()
                 .append("name", place.getName())
                 .append("parentId", place.getParentId());
@@ -57,8 +51,6 @@ public class PlaceRepository {
     }
 
     public List<Place> find(Set<String> ids) {
-        MongoCollection<Document> places = mongoConfiguration.getPlaceCollection();
-
         List<Place> result = new ArrayList<>();
 
         Set<ObjectId> objectIds = ids.stream()
@@ -75,8 +67,6 @@ public class PlaceRepository {
 
 
     public List<Place> findByParent(Place parent) {
-        MongoCollection<Document> places = mongoConfiguration.getPlaceCollection();
-
         List<Place> result = new ArrayList<>();
 
         places.find(eq("parentId", parent.getId()))
@@ -88,8 +78,7 @@ public class PlaceRepository {
     }
 
     public void delete(String id) {
-        mongoConfiguration.getPlaceCollection()
-                .deleteOne(eq("_id", new ObjectId(id)));
+        places.deleteOne(eq("_id", new ObjectId(id)));
     }
 
     private Place documentToPlace(Document d) {
