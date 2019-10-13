@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -51,30 +50,21 @@ public class PlaceRepository {
     }
 
     public List<Place> find(Set<String> ids) {
-        List<Place> result = new ArrayList<>();
 
         Set<ObjectId> objectIds = ids.stream()
                 .map(ObjectId::new)
                 .collect(Collectors.toSet());
 
-        places.find(in("_id", objectIds))
-                .forEach((Consumer<? super Document>) doc -> {
-                    Place place = documentToPlace(doc);
-                    result.add(place);
-                });
-        return result;
+        return places.find(in("_id", objectIds))
+                .map(this::documentToPlace)
+                .into(new ArrayList<>());
     }
 
 
     public List<Place> findByParent(Place parent) {
-        List<Place> result = new ArrayList<>();
-
-        places.find(eq("parentId", parent.getId()))
-                .forEach((Consumer<? super Document>) doc -> {
-                    Place place = documentToPlace(doc);
-                    result.add(place);
-                });
-        return result;
+        return places.find(eq("parentId", parent.getId()))
+                .map(this::documentToPlace)
+                .into(new ArrayList<>());
     }
 
     public void delete(String id) {
