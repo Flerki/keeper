@@ -1,5 +1,6 @@
 package com.amairovi.keeper.configuration;
 
+import com.amairovi.keeper.model.Item;
 import com.amairovi.keeper.model.Place;
 import com.amairovi.keeper.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,13 +29,16 @@ public class InitialDataConfiguration {
 
     private final MongoCollection<Document> placesCollection;
     private final MongoCollection<Document> usersCollection;
+    private final MongoCollection<Document> itemsCollection;
 
     public InitialDataConfiguration(
             @Qualifier("places") MongoCollection<Document> placesCollection,
-            @Qualifier("users") MongoCollection<Document> usersCollection
+            @Qualifier("users") MongoCollection<Document> usersCollection,
+            @Qualifier("items") MongoCollection<Document> itemsCollection
     ) {
         this.placesCollection = placesCollection;
         this.usersCollection = usersCollection;
+        this.itemsCollection = itemsCollection;
     }
 
     @PostConstruct
@@ -42,6 +46,7 @@ public class InitialDataConfiguration {
         log.info("Generate and upload some data to db");
 
         addPlaces();
+        addItems();
         addUsers();
     }
 
@@ -71,8 +76,36 @@ public class InitialDataConfiguration {
         }
 
         log.info("End to generate and upload some places to db");
-
     }
+
+    private void addItems(){
+        log.info("Begin to generate and upload some items to db");
+
+        Resource resource = new ClassPathResource("data/items.json");
+        try (InputStream input = resource.getInputStream()) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            String json = reader.lines().collect(Collectors.joining());
+            ObjectMapper objectMapper = new ObjectMapper();
+            Item[] places = objectMapper.readValue(json, Item[].class);
+
+            itemsCollection.drop();
+
+            Arrays.stream(places)
+                    .forEach(p -> {
+
+                        Document document = new Document("name", p.getName())
+                                .append("_id", new ObjectId(p.getId()))
+                                .append("placeId", p.getPlaceId());
+
+                        itemsCollection.insertOne(document);
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        log.info("End to generate and upload some items to db");
+    }
+
 
     private void addUsers() {
         log.info("Begin to generate and upload some users to db");
