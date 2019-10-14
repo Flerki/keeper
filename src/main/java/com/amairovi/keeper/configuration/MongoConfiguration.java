@@ -14,24 +14,30 @@ import org.springframework.context.annotation.Configuration;
 public class MongoConfiguration {
 
     @Bean
-    public MongoClient mongoClient(){
+    public MongoClient mongoClient() {
         MongoClient mongo = MongoClients.create("mongodb://localhost:27017");
         log.debug("Client to mongo was successfully created");
         return mongo;
     }
 
     @Bean
-    public MongoDatabase mongoDatabase(){
+    public MongoDatabase mongoDatabase() {
         return mongoClient().getDatabase("keeper");
     }
 
     @Bean("places")
-    public MongoCollection<Document> placeCollection(){
+    public MongoCollection<Document> placeCollection() {
         return mongoDatabase().getCollection("places");
     }
 
     @Bean("users")
-    public MongoCollection<Document> userCollection(){
+    public MongoCollection<Document> userCollection() {
         return mongoDatabase().getCollection("users");
     }
+
+    @Bean("items")
+    public MongoCollection<Document> itemCollection() {
+        return mongoDatabase().getCollection("items");
+    }
+
 }
