@@ -2,6 +2,7 @@ package com.amairovi.keeper.web;
 
 
 import com.amairovi.keeper.dto.CreatePlace;
+import com.amairovi.keeper.dto.ItemDto;
 import com.amairovi.keeper.dto.UpdatePlace;
 import com.amairovi.keeper.model.Place;
 import com.amairovi.keeper.model.User;
@@ -11,6 +12,9 @@ import com.amairovi.keeper.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/places")
@@ -52,4 +56,21 @@ public class PlaceController {
 
         placeService.delete(placeId);
     }
+
+    @GetMapping("/{placeId}/items")
+    public List<ItemDto> getAllItems(@PathVariable String placeId) {
+        log.debug("Get all items for place with id {}.", placeId);
+
+
+        return placeService.findItemsFor(placeId)
+                .stream()
+                .map(item -> {
+                    ItemDto dto = new ItemDto();
+                    dto.setId(item.getId());
+                    dto.setName(item.getName());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
 }
