@@ -11,6 +11,7 @@ public class UserPlace {
     private final String id;
     private final String name;
     private final List<UserPlace> children;
+    private final String parentId;
 
     public Set<String> generateHierarchyIds() {
         HashSet<String> ids = new HashSet<>();

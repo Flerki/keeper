@@ -35,20 +35,20 @@ public class UserPlaceService {
         List<Place> places = placeRepository.find(rootPlaceIds);
 
         return places.stream()
-                .map(this::createUserPlace)
+                .map(p -> createUserPlace(p, null))
                 .collect(toList());
     }
 
-    private UserPlace createUserPlace(Place place) {
+    private UserPlace createUserPlace(Place place, String parentId) {
         List<Place> childrenPlaces = placeRepository.findByParent(place);
         String id = place.getId();
         String name = place.getName();
         return childrenPlaces.stream()
-                .map(this::createUserPlace)
+                .map(p -> createUserPlace(p, id))
                 .collect(collectingAndThen(
                         toList(),
-                        childrenUserPlaces -> new UserPlace(id, name, childrenUserPlaces)
+                        childrenUserPlaces -> new UserPlace(id, name, childrenUserPlaces, parentId)
                 ));
-
     }
+
 }
