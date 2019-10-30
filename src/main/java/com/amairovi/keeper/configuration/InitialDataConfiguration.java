@@ -125,6 +125,7 @@ public class InitialDataConfiguration {
                         Document document = new Document()
                                 .append("_id", new ObjectId(u.getId()))
                                 .append("email", u.getEmail())
+                                .append("password", u.getPassword())
                                 .append("places", u.getPlaces());
 
                         usersCollection.insertOne(document);

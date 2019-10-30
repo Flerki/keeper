@@ -2,6 +2,7 @@
   {
     "id": "5d8d0c082948d1417d171cb0",
     "email": "user_email@keeper.com",
+    "password": "pass",
     "places": [
       "5d8d0c082948d1417d171ab0"
     ]
@@ -9,11 +10,13 @@
   {
     "id": "5d8d0c082948d1417d171cb1",
     "email": "user_witouth_places_email@keeper.com",
+    "password": "pass",
     "places": []
   },
   {
     "id": "5d8d0c082948d1417d171cb2",
     "email": "user_email_2@keeper.com",
+    "password": "pass",
     "places": [
       "5d8d0c082948d1417d171ab5",
       "5d8d0c082948d1417d171ab7"

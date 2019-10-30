@@ -20,14 +20,23 @@ public class UserController {
 
     @PutMapping
     public void register(@RequestBody Registration registration) {
-        userService.register(registration.getEmail());
+        userService.register(registration.getEmail(), registration.getPassword());
     }
 
     @PostMapping
     public String authentication(@RequestBody Authentication authentication) {
         String email = authentication.getEmail();
-        return userService.findByEmail(email)
-                .getId();
+        User user = userService.findByEmail(email);
+
+        // TODO: move check to a separate service
+        String expectedPassword = user.getPassword();
+        String actualPassword = authentication.getPassword();
+        if (actualPassword.equals(expectedPassword)){
+            return user.getId();
+        }else {
+            // TODO add propert exception handling
+            throw new IllegalArgumentException("Wrong password");
+        }
     }
 
     @GetMapping("/{userId}/places")

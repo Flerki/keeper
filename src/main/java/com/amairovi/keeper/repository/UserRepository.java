@@ -27,6 +27,7 @@ public class UserRepository {
         log.debug("Save user: {}", user);
         Document document = new Document()
                 .append("email", user.getEmail())
+                .append("password", user.getPassword())
                 .append("places", user.getPlaces());
 
         users.insertOne(document);
@@ -38,6 +39,7 @@ public class UserRepository {
         log.debug("Update user: {}", user);
         Document document = new Document()
                 .append("email", user.getEmail())
+                .append("password", user.getPassword())
                 .append("places", user.getPlaces());
 
         users.replaceOne(eq("email", user.getEmail()), document);
@@ -65,6 +67,7 @@ public class UserRepository {
         User user = new User();
         user.setId(d.getObjectId("_id").toString());
         user.setEmail(d.getString("email"));
+        user.setPassword(d.getString("password"));
         ArrayList<String> places = (ArrayList<String>) d.get("places");
         user.setPlaces(new HashSet<>(places));
         return user;

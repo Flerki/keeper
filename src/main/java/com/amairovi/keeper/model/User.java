@@ -11,6 +11,7 @@ import java.util.Set;
 public class User {
     private String id;
     private String email;
+    private String password;
     private Set<String> places = new HashSet<>();
 
     public void addPlace(String place){
