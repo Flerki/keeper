@@ -68,8 +68,8 @@ public class UserPlaceServiceTest {
         List<UserPlace> result = placeService.getPlacesHierarchyForUser(user);
 
         assertThat(result).containsExactlyInAnyOrder(
-                new UserPlace(place1.getId(), place1.getName(), emptyList()),
-                new UserPlace(place2.getId(), place2.getName(), emptyList())
+                new UserPlace(place1.getId(), place1.getName(), emptyList(), null),
+                new UserPlace(place2.getId(), place2.getName(), emptyList(), null)
         );
     }
 
@@ -89,12 +89,14 @@ public class UserPlaceServiceTest {
         Place place2 = new Place();
         place2.setId("2");
         place2.setName("name2");
+        place2.setParentId(place1.getId());
 
         when(placeRepository.findByParent(eq(place1))).thenReturn(singletonList(place2));
 
         Place place3 = new Place();
         place3.setId("3");
         place3.setName("name3");
+        place3.setParentId(place2.getId());
 
         when(placeRepository.findByParent(eq(place2))).thenReturn(singletonList(place3));
 
@@ -103,7 +105,9 @@ public class UserPlaceServiceTest {
         assertThat(result).containsOnly(
                 new UserPlace(place1.getId(), place1.getName(), singletonList(
                         new UserPlace(place2.getId(), place2.getName(), singletonList(
-                                new UserPlace(place3.getId(), place3.getName(), emptyList()))))
+                                new UserPlace(place3.getId(), place3.getName(), emptyList(), place2.getId())
+                        ), place1.getId())
+                ), null
                 )
         );
     }
