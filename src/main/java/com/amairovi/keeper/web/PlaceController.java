@@ -68,6 +68,7 @@ public class PlaceController {
                     ItemDto dto = new ItemDto();
                     dto.setId(item.getId());
                     dto.setName(item.getName());
+                    dto.setPlaceId(placeId);
                     return dto;
                 })
                 .collect(Collectors.toList());
