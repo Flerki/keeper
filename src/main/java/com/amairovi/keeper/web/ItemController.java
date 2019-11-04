@@ -1,6 +1,7 @@
 package com.amairovi.keeper.web;
 
 import com.amairovi.keeper.dto.CreateItem;
+import com.amairovi.keeper.dto.ItemDto;
 import com.amairovi.keeper.dto.UpdateItem;
 import com.amairovi.keeper.model.Item;
 import com.amairovi.keeper.service.ItemService;
@@ -24,6 +25,18 @@ public class ItemController {
 
         Item item = itemService.create(itemName, placeId);
         return item.getId();
+    }
+
+    @GetMapping("/{itemId}")
+    public ItemDto get(@PathVariable String itemId){
+        Item item = itemService.findById(itemId);
+
+        ItemDto dto = new ItemDto();
+        dto.setId(itemId);
+        dto.setName(item.getName());
+        dto.setPlaceId(item.getPlaceId());
+
+        return dto;
     }
 
     @PutMapping("/{itemId}")

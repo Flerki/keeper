@@ -2,6 +2,7 @@ package com.amairovi.keeper.service;
 
 import com.amairovi.keeper.exception.ItemDoesNotExistException;
 import com.amairovi.keeper.model.Item;
+import com.amairovi.keeper.model.Place;
 import com.amairovi.keeper.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ItemService {
+
     private final ItemRepository itemRepository;
 
     public Item create(String name, String placeId) {
@@ -30,10 +32,16 @@ public class ItemService {
         itemRepository.update(item);
     }
 
-    public void delete(String id){
+    public void delete(String id) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new ItemDoesNotExistException("Item with id " + id + " does not exist."));
 
         itemRepository.delete(id);
     }
+
+    public Item findById(String id) {
+        return itemRepository.findById(id)
+                .orElseThrow(() -> new ItemDoesNotExistException("Item with id " + id + " does not exist."));
+    }
+
 }

@@ -6,4 +6,5 @@ import lombok.Data;
 public class ItemDto {
     private String id;
     private String name;
+    private String placeId;
 }
