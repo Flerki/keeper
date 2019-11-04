@@ -45,4 +45,14 @@ public class UserController {
 
         return placeService.getPlacesHierarchyForUser(user);
     }
+
+    @PutMapping("/{userId}/places/{placeId}")
+    public void addPlace(@PathVariable String userId, @PathVariable String placeId){
+        userService.addPlace(userId, placeId);
+    }
+
+    @DeleteMapping("/{userId}/places/{placeId}")
+    public void deletePlace(@PathVariable String userId, @PathVariable String placeId){
+        userService.deletePlace(userId, placeId);
+    }
 }

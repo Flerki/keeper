@@ -32,4 +32,23 @@ public class UserService {
                 .orElseThrow(() ->
                         new UserDoesNotExistException("User with id " + id + " doesn't exist."));
     }
+
+    public void addPlace(String userId, String placeId) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new UserDoesNotExistException("User with id " + userId + " doesn't exist."));
+
+        user.getPlaces().add(placeId);
+
+        userRepository.update(user);
+    }
+
+    public void deletePlace(String userId, String placeId) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new UserDoesNotExistException("User with id " + userId + " doesn't exist."));
+
+        user.getPlaces().remove(placeId);
+
+        userRepository.update(user);
+    }
+
 }
