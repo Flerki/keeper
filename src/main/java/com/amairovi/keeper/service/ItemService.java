@@ -2,10 +2,14 @@ package com.amairovi.keeper.service;
 
 import com.amairovi.keeper.exception.ItemDoesNotExistException;
 import com.amairovi.keeper.model.Item;
-import com.amairovi.keeper.model.Place;
 import com.amairovi.keeper.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +46,12 @@ public class ItemService {
     public Item findById(String id) {
         return itemRepository.findById(id)
                 .orElseThrow(() -> new ItemDoesNotExistException("Item with id " + id + " does not exist."));
+    }
+
+    public List<Item> getItemsForPlaces(Set<String> placeIds) {
+        return placeIds.stream()
+                .flatMap(placeId -> itemRepository.findByPlaceId(placeId).stream())
+                .collect(toList());
     }
 
 }
