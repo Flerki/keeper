@@ -5,6 +5,7 @@ import com.amairovi.keeper.model.Place;
 import com.amairovi.keeper.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoCollection;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -19,7 +20,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -50,6 +54,15 @@ public class InitialDataConfiguration {
         addUsers();
     }
 
+    @Data
+    private static class PlaceData {
+
+        private String id;
+        private String name;
+        private PlaceData[] children;
+
+    }
+
     private void addPlaces() {
         log.info("Begin to generate and upload some places to db");
 
@@ -58,12 +71,12 @@ public class InitialDataConfiguration {
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
             String json = reader.lines().collect(Collectors.joining());
             ObjectMapper objectMapper = new ObjectMapper();
-            Place[] places = objectMapper.readValue(json, Place[].class);
+            PlaceData[] placeData = objectMapper.readValue(json, PlaceData[].class);
+            List<Place> places = convertPlaceDataToPlace(placeData, null);
 
             placesCollection.drop();
 
-            Arrays.stream(places)
-                    .forEach(p -> {
+            places.forEach(p -> {
 
                         Document document = new Document("name", p.getName())
                                 .append("_id", new ObjectId(p.getId()))
@@ -78,7 +91,30 @@ public class InitialDataConfiguration {
         log.info("End to generate and upload some places to db");
     }
 
-    private void addItems(){
+    private List<Place> convertPlaceDataToPlace(PlaceData[] placeDataArr, String parentId) {
+        if (placeDataArr == null){
+            return Collections.emptyList();
+        }
+
+        ArrayList<Place> places = new ArrayList<>();
+
+        for (PlaceData placeData : placeDataArr) {
+            Place place = new Place();
+            place.setId(placeData.getId());
+            place.setName(placeData.getName());
+            place.setParentId(parentId);
+
+            places.add(place);
+            List<Place> children = convertPlaceDataToPlace(placeData.getChildren(), place.getId());
+
+            places.addAll(children);
+
+        }
+
+        return places;
+    }
+
+    private void addItems() {
         log.info("Begin to generate and upload some items to db");
 
         Resource resource = new ClassPathResource("data/items.json");
@@ -137,4 +173,5 @@ public class InitialDataConfiguration {
         log.info("End to generate and upload some users to db");
 
     }
+
 }
