@@ -4,13 +4,16 @@ import com.amairovi.keeper.dto.Authentication;
 import com.amairovi.keeper.dto.ItemDto;
 import com.amairovi.keeper.dto.Registration;
 import com.amairovi.keeper.dto.UserPlace;
+import com.amairovi.keeper.model.Item;
 import com.amairovi.keeper.model.User;
 import com.amairovi.keeper.service.ItemService;
 import com.amairovi.keeper.service.UserPlaceService;
 import com.amairovi.keeper.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +24,7 @@ import static java.util.stream.Collectors.toList;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserPlaceService placeService;
@@ -88,7 +92,7 @@ public class UserController {
     @GetMapping("/{userId}/items/recent")
     public List<ItemDto> getRecentItems(@PathVariable String userId) {
         User user = userService.findById(userId);
-        List<ItemDto> recentItems = user.getRecentItems()
+        return user.getRecentItems()
                 .stream()
                 .map(itemService::findById)
                 .map(item -> {
@@ -98,6 +102,16 @@ public class UserController {
                     dto.setPlaceId(item.getPlaceId());
                     return dto;
                 }).collect(toList());
-        return recentItems;
     }
+
+    @PutMapping("/{userId}/items/recent/{itemId}")
+    public void addRecentItem(@PathVariable String userId, @PathVariable String itemId) {
+        log.debug("Add recent item {} for user {}.", itemId, userId);
+
+        User user = userService.findById(userId);
+        Item item = itemService.findById(itemId);
+
+        userService.addItemToRecent(user, item);
+    }
+
 }
