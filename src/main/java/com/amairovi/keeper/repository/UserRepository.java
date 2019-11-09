@@ -28,7 +28,8 @@ public class UserRepository {
         Document document = new Document()
                 .append("email", user.getEmail())
                 .append("password", user.getPassword())
-                .append("places", user.getPlaces());
+                .append("places", user.getPlaces())
+                .append("recentItems", user.getRecentItems());
 
         users.insertOne(document);
 
@@ -40,7 +41,8 @@ public class UserRepository {
         Document document = new Document()
                 .append("email", user.getEmail())
                 .append("password", user.getPassword())
-                .append("places", user.getPlaces());
+                .append("places", user.getPlaces())
+                .append("recentItems", user.getRecentItems());
 
         users.replaceOne(eq("email", user.getEmail()), document);
     }
@@ -70,6 +72,8 @@ public class UserRepository {
         user.setPassword(d.getString("password"));
         ArrayList<String> places = (ArrayList<String>) d.get("places");
         user.setPlaces(new HashSet<>(places));
+        ArrayList<String> recentItems = (ArrayList<String>) d.get("recentItems");
+        user.setRecentItems(new ArrayList<>(recentItems));
         return user;
     }
 }

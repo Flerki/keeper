@@ -11,13 +11,19 @@
       "5d8d0c082948d1417d171abe",
       "5d8d0c082948d1417d171abf",
       "5d8d0c082948d1417d171ac0"
+    ],
+    "recentItems": [
+      "5da34e0380580e2eb9082fa4",
+      "5da34e0380580e2eb9082fa3",
+      "5da34e0380580e2eb9082fa1"
     ]
   },
   {
     "id": "5d8d0c082948d1417d171cb1",
     "email": "user_witouth_places_email@keeper.com",
     "password": "pass",
-    "places": []
+    "places": [],
+    "recentItems": []
   },
   {
     "id": "5d8d0c082948d1417d171cb2",
@@ -26,6 +32,7 @@
     "places": [
       "5d8d0c082948d1417d171ab5",
       "5d8d0c082948d1417d171ab7"
-    ]
+    ],
+    "recentItems": []
   }
 ]

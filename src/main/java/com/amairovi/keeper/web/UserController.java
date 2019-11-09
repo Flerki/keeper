@@ -85,4 +85,19 @@ public class UserController {
         userService.deletePlace(userId, placeId);
     }
 
+    @GetMapping("/{userId}/items/recent")
+    public List<ItemDto> getRecentItems(@PathVariable String userId) {
+        User user = userService.findById(userId);
+        List<ItemDto> recentItems = user.getRecentItems()
+                .stream()
+                .map(itemService::findById)
+                .map(item -> {
+                    ItemDto dto = new ItemDto();
+                    dto.setId(item.getId());
+                    dto.setName(item.getName());
+                    dto.setPlaceId(item.getPlaceId());
+                    return dto;
+                }).collect(toList());
+        return recentItems;
+    }
 }

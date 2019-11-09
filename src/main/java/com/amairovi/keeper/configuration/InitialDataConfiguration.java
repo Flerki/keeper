@@ -162,7 +162,8 @@ public class InitialDataConfiguration {
                                 .append("_id", new ObjectId(u.getId()))
                                 .append("email", u.getEmail())
                                 .append("password", u.getPassword())
-                                .append("places", u.getPlaces());
+                                .append("places", u.getPlaces())
+                                .append("recentItems", u.getRecentItems());
 
                         usersCollection.insertOne(document);
                     });
