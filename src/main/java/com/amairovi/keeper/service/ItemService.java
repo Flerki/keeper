@@ -3,6 +3,7 @@ package com.amairovi.keeper.service;
 import com.amairovi.keeper.exception.ItemDoesNotExistException;
 import com.amairovi.keeper.model.Item;
 import com.amairovi.keeper.repository.ItemRepository;
+import com.amairovi.keeper.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import static java.util.stream.Collectors.toList;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     public Item create(String name, String placeId) {
         Item item = new Item();
@@ -41,6 +43,7 @@ public class ItemService {
                 .orElseThrow(() -> new ItemDoesNotExistException("Item with id " + id + " does not exist."));
 
         itemRepository.delete(id);
+        userRepository.removeRecentItemId(id);
     }
 
     public Item findById(String id) {

@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Optional;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.pull;
 
 @Repository
 @Slf4j
@@ -63,6 +64,13 @@ public class UserRepository {
                 .first();
         return Optional.ofNullable(found)
                 .map(this::documentToUser);
+    }
+
+    public void removeRecentItemId(String itemId) {
+        users.updateMany(
+                new Document("recentItems", itemId),
+                pull("recentItems", itemId)
+        );
     }
 
     private User documentToUser(Document d) {
