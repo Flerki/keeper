@@ -1,9 +1,6 @@
 package com.amairovi.keeper.web;
 
-import com.amairovi.keeper.dto.Authentication;
-import com.amairovi.keeper.dto.ItemDto;
-import com.amairovi.keeper.dto.Registration;
-import com.amairovi.keeper.dto.UserPlace;
+import com.amairovi.keeper.dto.*;
 import com.amairovi.keeper.model.Item;
 import com.amairovi.keeper.model.User;
 import com.amairovi.keeper.service.ItemService;
@@ -13,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -112,6 +106,44 @@ public class UserController {
         Item item = itemService.findById(itemId);
 
         userService.addItemToRecent(user, item);
+    }
+
+    @GetMapping("/{userId}/elements")
+    public List<ElementDto> getAllElements(@PathVariable String userId) {
+        User user = userService.findById(userId);
+        List<ElementDto> result = new ArrayList<>();
+        List<UserPlace> rootPlaces = placeService.getPlacesHierarchyForUser(user);
+
+        Set<UserPlace> userPlaces = rootPlaces
+                .stream()
+                .flatMap(up -> up.generateHierarchy().stream())
+                .collect(Collectors.toSet());
+
+        result.addAll(userPlaces
+                .stream()
+                .map(place -> {
+                    ElementDto dto = new ElementDto();
+                    dto.setId(place.getId());
+                    dto.setName(place.getName());
+                    dto.setIsPlace(true);
+                    return dto;
+                })
+                .collect(Collectors.toList()));
+
+        Set<String> userPlaceIds = userPlaces.stream().map(UserPlace::getId).collect(Collectors.toSet());
+
+        result.addAll(itemService.getItemsForPlaces(userPlaceIds)
+                .stream()
+                .map(item -> {
+                    ElementDto dto = new ElementDto();
+                    dto.setId(item.getId());
+                    dto.setName(item.getName());
+                    dto.setIsPlace(false);
+                    return dto;
+                })
+                .collect(Collectors.toList()));
+
+        return result;
     }
 
 }

@@ -23,4 +23,15 @@ public class UserPlace {
         ids.add(id);
         return ids;
     }
+
+    public Set<UserPlace> generateHierarchy() {
+        HashSet<UserPlace> hierarchy = new HashSet<>();
+
+        children.stream()
+                .map(UserPlace::generateHierarchy)
+                .forEach(hierarchy::addAll);
+
+        hierarchy.add(this);
+        return hierarchy;
+    }
 }
